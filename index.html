@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>Django by Example - Thomas Whitton</title>
+
+        <meta name="description" content="An introduction into Django with examples!">
+        <meta name="author" content="Thomas Whitton">
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+        <!-- For syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+        <script>
+            document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+
+                <section>
+                    </br>
+                    </br>
+                    </br>
+                    <h2>Django By Example</h2>
+                    </br>
+                    <p>Thomas Whitton</p>
+                    </br>
+                    <p>2012/10/25</p>
+                </section>
+                <section>
+                    <h2>Django</h2>
+                    <blockquote cite="https://www.djangoproject.com/">
+                        The Web framework for perfectionist with <em>deadlines</em>
+                    </blockquote>
+                    </br>
+                    <p>Django heavly adheres to the <em>DRY</em> principal</p>
+                    <br/>
+                    <p>Allows you to rapidly create complex fully functional websites</p>
+
+                </section>
+                <section>
+                    <h2>So you've heard of MVC?</h2>
+                    <ol>
+                        <li class="fragment">Models</li>
+                        <li class="fragment">Views</li>
+                        <li class="fragment">Controllers</li>
+                    </ol>
+                    <p><a href="http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" class="image fragment">
+                            <img width="250" src="images/500px-MVC-Process.svg.png" alt="MVC Diagram">
+                        </a>
+                    </p>
+                </section>
+                <section>
+                    <h2>Django Architecture</h2>
+                    <p>Django instead uses a similar <em>MTV pattern</em></p>
+                    </br>
+                    <ol>
+                        <li class="fragment">Models</li>
+                        <li class="fragment">Templates</li>
+                        <li class="fragment">Views</li>
+                    </ol>
+                    </br>
+                    </br>
+                    <p class="fragment">But this is just naming convention and is pretty much the MVC pattern</p>
+                    <p class="fragment"><small>It can get a little confusing though</small></p>
+                </section>
+                <section>
+                    <h2>Django MTV Diagram</h2>
+                    <a href="http://www.flickr.com/photos/jcroft/432038560/sizes/o/in/photostream/" class="image">
+                            <img width="855" height ="477" src="images/432038560_9f8b830dfe_o.png" alt="MTV Diagram">
+                        </a>
+                        <i><small>Diagram by <a href="http://www.flickr.com/photos/jcroft">Jeff Croft</a></small></i>
+                </section>
+                <section>
+                <h2>Django Example Project Structure</h2>
+                        <p style="padding-left:300px; text-align:left;">
+                        <small class ="fragment">README<br>
+                        manage.py<br>
+                        fabfile.py</small><br/><br/>
+                        <small class ="fragment">site/settings.py<br>
+                        site/wsgi.py<br>
+                        site/urls.py</small><br/><br/>
+                        <small class ="fragment">site/app/models.py<br>
+                        site/app/forms.py<br>
+                        site/app/views.py<br>
+                        site/app/urls.py<br>
+                        site/app/middleware.py</small><br/><br/>
+                        <small class ="fragment">site/app/templates/template.html</small><br>
+                        </p>
+                </section>
+                <section>
+                <h2>Django Example Application</h2>
+                    <a href="http://www.repowatcher.com/github/oracal/starred" class="image">
+                            <img width="600" src="images/github_watched_unauthed.png" alt="Django Example Application">
+                        </a>
+                    <p>
+                        <i><small><a href="http://www.repowatcher.com">www.repowatcher.com</a></small></i>
+                    </p>
+                </section>
+                <!-- Example of nested vertical slides -->
+                <section>
+                    <section>
+                        <h2>Models</h2>
+                        <p class = "fragment">Models provide the business logic and state to an application</p><br/>
+                        <p class = "fragment">i.e. models are a form of data abstraction which separate out the state of data and the methods for manipulating that data from the rest of the application</p><br/>
+                        <p class = "fragment">Django does this via an <em>Object Relational Mapper (ORM)</em> which maps <em>Python Classes</em> to <em>physical data stores</em>, most commonly SQL databases</p>
+                    </section>
+                    <section>
+                        <h2>Example Model</h2>
+                        <pre><code style="max-height:500px;" contenteditable>
+ class Repository(models.Model):
+     owner = CharField(max_length=100)
+     name = CharField(max_length=100)
+     slug = SlugField(max_length=201)
+     host_slug = SlugField(max_length=302, unique = True)
+     language = CharField(max_length=100, null = True)
+     html_url = URLField(null = True, max_length=400)
+     homepage = URLField(null = True, max_length=400)
+     watchers = PositiveIntegerField(null = True)
+     created_at = DateTimeField(null = True)
+     pushed_at = DateTimeField(null = True)
+     description = TextField(null = True)
+     extra_data = JSONField(null = True)
+     last_modified = DateTimeField(auto_now=True)
+     private = BooleanField(default = False)
+     scm = CharField(max_length=100, choices=SCM_CHOICES)
+     host = CharField(max_length=100, choices=HOST_CHOICES)
+
+</pre></code>
+                    </section>
+                    <section>
+                        <h2>Example Model Continued</h2>
+                        <pre><code style="max-height: 500px;" contenteditable>
+ HOST_CHOICES = (('github', 'github'),
+                ('bitbucket', 'bitbucket'))
+
+ SCM_CHOICES = (('git','git'),
+               ('hg','mercurial'))
+
+ class Repository(models.Model):
+     ...
+     scm = CharField(max_length=100, choices=SCM_CHOICES)
+     host = CharField(max_length=100, choices=HOST_CHOICES)
+
+     class Meta:
+         unique_together = ("owner", "name", "host")
+         ordering = ['-watchers']
+
+     def save(self, *args, **kwargs):
+         self.slug = self.owner.lower() + '/' + self.name.lower()
+         super(Repository, self).save(*args, **kwargs)
+
+</pre></code>
+                    </section>
+                    <section>
+                        <h2>Generated SQL</h2>
+                        <pre><code style="max-height:600px;" contenteditable>
+ CREATE TABLE "main_repository" (
+     "id" serial NOT NULL PRIMARY KEY,
+     "owner" varchar(100) NOT NULL,
+     "name" varchar(100) NOT NULL,
+     "slug" varchar(201) NOT NULL,
+     "host_slug" varchar(302) NOT NULL UNIQUE,
+     "language" varchar(100),
+     "html_url" varchar(400),
+     "homepage" varchar(400),
+     "watchers" integer CHECK ("watchers" >= 0),
+     "created_at" timestamp with time zone,
+     "pushed_at" timestamp with time zone,
+     "description" text,
+     "extra_data" text,
+     "last_modified" timestamp with time zone NOT NULL,
+     "scm" varchar(100),
+     "host" varchar(100) NOT NULL,
+     "private" boolean NOT NULL,
+     UNIQUE ("owner", "name", "host")
+ );
+
+</pre></code>
+                    </section>
+                    <section>
+                    <h2>More Examples of Models</h2>
+                        <pre><code style="max-height:600px;" contenteditable>
+ class RepositoryCategory(models.Model):
+     name = CharField(max_length=100)
+
+ class UserProfile(models.Model):
+     user = models.OneToOneField(User)
+     repositories = models.ManyToManyField(Repository,
+                                      through='UserRepositoryLink')
+     last_modified = DateTimeField(auto_now=True)
+
+ class LinkType(models.model):
+        name = CharField(max_length = 100, unique = True,
+                         choices = LINK_TYPES)
+
+ class UserRepositoryLink(models.Model):
+     user = ForeignKey(UserProfile)
+     repository = ForeignKey(Repository)
+     order = PositiveIntegerField()
+     repository_category = ForeignKey(RepositoryCategory)
+     last_modified = DateTimeField(auto_now = True)
+     link_type = ForeignKey(LinkType)
+
+
+</pre></code>
+                    </section>
+                    <section>
+                    <h2>"Making Queries"</h2>
+                        <pre><code style="max-height:600px;" contenteditable>
+ repository_user = RepositoryUser.objects.get(slug="github/oracal")
+
+ repo_link_type, _ = LinkType.objects.get_or_create(name = "owned")
+
+ repositories = Repository.objects
+                .filter(watchers__isnull=False)
+                .all()[:50]
+
+ user = request.user
+ profile = user.get_profile()
+
+ link = UserRepositoryLink(user = profile,
+                           repository = repository,
+                           order = 1,
+                           link_type = repo_link_type)
+ link.save()
+
+ links = profile.userrepositorylink_set
+                .filter(link_type = repo_link_type)
+                .filter(repository__host='bitbucket')
+ links.delete()
+
+</pre></code>
+                    </section>
+                    </section>
+                <section>
+                    <section>
+                        <h2>Templates</h2>
+                        <p class = "fragment">Templates provide the physical appearence of the current state of the data</p><br/>
+                        <p class = "fragment">i.e. templates have knowledge of the data format and can show its current state in a human readable way</p><br/>
+                        <p class = "fragment">In Django this is done by a simplistic templating language embedded within normal HTML code, with lots of convenience functions for displaying output</p>
+                    </section>
+                    <section>
+                        <h2>Example Template Code</h2>
+                        <small>(Without HTML)</small>
+                        <pre><code style="max-height:600px;" contenteditable>
+ {% for category, value in repositories_by_language %}
+
+     {% url github_watched_language_popular category %}
+
+     {{category}}
+
+     {% for repo in value %}
+
+         {% url github_repo repo.owner repo.name %}
+
+         {{ repo.owner }}/{{ repo.name }}
+
+     {% endfor %}
+
+ {% endfor %}
+
+</pre></code>
+                    </section>
+                    <section>
+                        <h2>Cool Template Functions</h2>
+                        <pre><code style="max-height:600px;" contenteditable>
+ {{event.payload.pull_request.additions|pluralize}}
+
+ {{event.payload.pull_request.title|truncatewords:35|urlize}}
+
+ {{wiki_page.action|capfirst}}
+
+ {{wiki_page.sha|slice:"7"}}
+
+ {{event.created_at|date:"r"}}
+
+ {{repository_user.name|title}}
+
+ {{repository_user.login|lower}}
+
+ {% if event.type == "IssueCommentEvent"  %}
+    ...
+ {% endif %}
+
+</pre></code>
+                    </section>
+                    <section>
+                    <h2>Reusing Template Code</h2>
+                    <p><small>header.html</small></p>
+                        <pre><code style="max-height:600px;" contenteditable>
+ ...
+ {% block title %}
+ {% endblock %}
+
+ {% block content %}
+ {% endblock %}
+ ...
+
+</pre></code>
+                        <pre><code style="max-height:600px;" contenteditable>
+ {% extends "header.html" %}
+
+ {% block title %}
+     ...
+ {% endblock %}
+
+ {% block content %}
+     ...
+ {% endblock %}
+
+</pre></code>
+                    </section>
+                    </section>
+                    <section>
+                    <section>
+                    <h2>Views</h2></br>
+                        <p class = "fragment">Views bring everything else together</p><br/>
+                        <p class = "fragment">Views are the segments of code which connect the requests to the data, and then sends data back to the user interface</p><br/>
+                        <p class = "fragment">Views take in HTTP requests, interact with the models and then pass the models onto the templates</p><br/>
+                    </section>
+                    <section>
+                    <h2>Views Continued</h2><br/>
+                        <p class = "fragment">Django has a couple of forms of view syntax, the simplest is a function which takes in a request object as an argument and has to output an object derived from Django's <em>HTTP Response Object</em></p><br/>
+                        <p class = "fragment">In practice Django provides lots of convenience functions to create HTTP response objects, so you don't have to</em></p>
+                    </section>
+                    <section>
+                        <h2>Example View Code</h2>
+                        <pre><code style="max-height:600px;" contenteditable>
+ def index(request):
+     """Home view, displays login mechanism"""
+     if request.user.is_authenticated():
+         return HttpResponseRedirect(reverse('authed'))
+     else:
+         return render_to_response('index.html')
+
+ def watched_popular(request):
+     repo_dict = defaultdict(list)
+     repos = Repository.objects.filter(watchers__isnull=False)
+                               .filter(private=False).all()[:50]
+
+     for repo in repos:
+         repo_dict[repo.language].append(repo)
+
+     repo_dict = sorted(dict(repo_dict).iteritems(),
+                        key=lambda (k, v): len(v), reverse = True)
+
+     return render_to_response('watched_popular.html',
+                               {'repo_dict':repo_dict})
+
+</pre></code>
+                    </section>
+                    <section>
+                    <h2>Example View Code Continued</h2>
+                    <pre><code style="max-height:600px;" contenteditable>
+ def typeahead(request, value = None):
+
+     if value is None:
+         repos = Repository.objects.values('name').distinct()
+         users = Repository.objects.values('owner').distinct()
+     else:
+         repos = Repository.objects.filter(name__contains=value)
+                                   .values('name').distinct()
+         users = Repository.objects.filter(owner__contains=value)
+                                   .values('owner').distinct()
+     typeahead_list = []
+
+     for repo in repos:
+         typeahead_list.append(repo['name'])
+
+     for user in users:
+         typeahead_list.append(user['owner'])
+
+     return HttpResponse(json.dumps(typeahead_list),
+                         mimetype="application/json")
+
+</pre></code>
+                    </section>
+                    </section>
+                    <section>
+                    <section>
+                    <h2>Mapping</h2>
+                        <p class = "fragment">We now have a basis for requests coming in, being passed onto a view, manipulating models and sending them to the template to create a userinterface</p><br/>
+                        <p class = "fragment">What you might be asking yourself now is, how does Django know what view to send a particular request?</p><br/>
+                        <p class = "fragment">Django uses a <em>mapping</em> file called urls.py which maps html addresses to views, using regular expressions</p>
+                    </section>
+                    <section>
+                    <h2>urls.py</h2>
+                    <p class = "fragment">Seriously Simple</p>
+                    <pre class = "fragment"><code style="max-height:600px;" contenteditable>
+ urlpatterns = patterns('repowatcher.main.views',
+
+ url(r'^$', 'index'),
+ url(r'^about/$', 'about'),
+
+ url(r'^github/(?P&lt;username&gt;[^/]+)/$', 'github_username'),
+
+ url(r'^github/repo/(?P&lt;owner&gt;[^/]+)/(?P&lt;repo&gt;[^/]+)/$',
+     'github_repo'),
+
+ url(r'^github/(?P&lt;username&gt;[^/]+)/starred/$',
+     'github_username_watched', {"link_type":"starred"},
+     'github_username_starred'),
+
+ url(r'', include('social_auth.urls')),
+
+ )
+
+</pre></code>
+
+                    </section>
+                    <section>
+                    <h2>Navigating</h2>
+                    <p class = "fragment">Say you want a view to redirect to another url or you want to provide links in your html to other part of your site, what do you do? Hard coding is <em>bad!</em></p><br/>
+                    <p class = "fragment">Django provides a couple of techniques to allow you to generate the url from the view itself or from an identifyer that you have given the view in the urls.py, <em>reversing the regular expression</em></p><br/>
+</pre></code>
+
+                    </section>
+                    <section>
+                    <h2>Reversing</h2><br/>
+
+                    <p class = "fragment"><small>Inside views</small></p>
+                    <pre class = "fragment"><code style="max-height:600px;" contenteditable>
+
+ def anonymous_github_user(request):
+     username = request.GET.get('username', '')
+     return HttpResponseRedirect(reverse(github_username,
+                                 kwargs={'username': username}))
+
+</pre></code></br>
+                    <p class = "fragment"><small>Inside templates</small></p>
+<pre class = "fragment"><code style="max-height:600px;" contenteditable>
+ {% url github_repo repo.owner repo.name %}
+
+ {% url repowatcher.main.views.watched_popular %}
+
+</pre></code>
+
+                    </section>
+                    </section>
+                    <section>
+                    <section>
+                    <h2>Middleware</h2>
+
+                            <img width="502" height = "417" src="images/middleware.png" alt="Middleware Diagram">
+                    </section>
+                    <section>
+                    <h2>Middleware Code</h2><br/>
+                    <pre class = "fragment"><code style="max-height:600px;" contenteditable>
+ class Middleware(Object):
+
+     def process_response(self, request, response):
+         ...
+         return response
+
+
+     def process_request(self, request):
+         ...
+         # optional return, if you do return a response no other
+         # process request middleware will be called
+         return response
+
+</pre></code>
+
+                    </section>
+                    </section>
+                    <section>
+                    <h2>Other Cool Stuff</h2><br/>
+                        <li class = "fragment">Out of the box customisable admin interface</li>
+                        <li class = "fragment">Cache framework, with multiple cache mechanisms</li>
+                        <li class = "fragment">Simple logging which utilises python's own logging utilities</li>
+                        <li class = "fragment">Forms tied directly to models to allow simple creation and validation of html forms</li>
+                        <li class = "fragment">Mature third party applications...</li>
+                    </section>
+                    <section>
+                    <h2>Some Cool Third Party Apps</h2><br/>
+                    <ul>
+                        <li class = "fragment">django-celery - distributed asynchronous task queue</li>
+                        <li class = "fragment">django-social-auth - user authentaication via social auth providers</li>
+                        <li class = "fragment">django-debug-toolbar - Django debugging and profiling made easy</li>
+                        <li class = "fragment">django-redis-cache - redis cache mechanism</li>
+                        <li class = "fragment">django-south - Django database migration</li>
+                        <li class = "fragment">django-tastypie - easily create REST API's</li>
+                    </ul>
+                    </section>
+            </div>
+
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.min.js"></script>
+        <script src="js/jquery-1.8.2.min.js"></script>
+        <script>
+            $("pre code").focusout(function(event) {
+
+                    hljs.highlightBlock(event.currentTarget);
+              });
+
+        </script>
+        <script>
+
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+
+                transition: 'default', // default/cube/page/concave/zoom/linear/none
+
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                    { src: 'lib/js/highlight.js', async: true, callback: function() { window.hljs.initHighlightingOnLoad(); } },
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'lib/js/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'lib/js/data-markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/zoom-js/zoom.js', condition: function() { return !!document.body.classList; } },
+                    { src: '/socket.io/socket.io.js', async: true, condition: function() { return window.location.host === 'localhost:1947'; } },
+                    { src: 'plugin/speakernotes/client.js', async: true, condition: function() { return window.location.host === 'localhost:1947'; } }
+                ]
+            });
+
+        </script>
+
+    </body>
+</html>
